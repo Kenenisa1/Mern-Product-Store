@@ -4,10 +4,15 @@ import HomePage from './pages/HomePage';
 import CreatePage from './pages/CreatePage';
 import SignIn from './pages/SignIn';
 import SingUp from './pages/SingUp';
-
+import {Toaster } from 'react-hot-toast';
 const App = () => {
    return (
      <div>
+
+      <Toaster 
+          position="top-center"
+          reverseOrder={false} 
+      />
         <Navbar />
         <Routes>
             <Route path="/" element={<HomePage />} />
