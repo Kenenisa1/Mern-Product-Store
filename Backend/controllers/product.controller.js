@@ -27,22 +27,30 @@ export const createProduct =  async (req, res) => {
     await newProduct.save();
     res.status(201).json({ success: true, data: newProduct });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server Error" });
-  }
+        // Handle Mongoose Validation Errors (400)
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ 
+                success: false, 
+                message: error.message 
+            });
+        }
+        // Handle all other server errors (500)
+        console.error("Create Product Server Error:", error);
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
 }
 
 export const deleteProduct = async (req, res) => {
   const { id } = req.params;
+
+  if(!mongoose.Types.ObjectId.isValid(id)){
+    return res.status(404).json({ success: false, message : "Product not found"})
+  }
   try {
     const DeleteProduct=  await Product.findByIdAndDelete(id);
-
-    if(!DeleteProduct)
-    {
-        return res.status(404).json({success: false, message: "Product not found"})
-    }
     res.status(200).json({ success: true, message: "Product deleted successfully" });
   } catch (err) {
-    console.log(`${err}`);
+    res.status(500).json({success:  false, message: "Server Error"});
   }
 }
 
