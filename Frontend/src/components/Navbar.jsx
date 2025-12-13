@@ -44,7 +44,7 @@ const Navbar = () => {
           <img 
             src={logo} 
             alt="Product Store" 
-            className="w-10 h-10 md:w-12 md:h-12 object-contain"
+            className="w-30 h-20 md:w-12 md:h-12 object-contain"
           />
           <span className="hidden md:inline text-xl font-bold text-gray-900">
             Product Store
@@ -57,7 +57,7 @@ const Navbar = () => {
             to="/Products" 
             className={`${styles.navLink} items-center justify-center flex`}
           >
-            <AiOutlineAppstoreAdd className={styles.iconSm} />
+            <AiOutlineAppstoreAdd className={styles.iconMd} />
             <span className="ml-2">Products</span>
           </Link>
 
