@@ -50,6 +50,7 @@ export const deleteProduct = async (req, res) => {
     const DeleteProduct=  await Product.findByIdAndDelete(id);
     res.status(200).json({ success: true, message: "Product deleted successfully" });
   } catch (err) {
+    console.log(" Delete Product Error:", error)
     res.status(500).json({success:  false, message: "Server Error"});
   }
 }
@@ -69,6 +70,8 @@ export const updateProduct = async (req, res) => {
   }
 
   catch  {
+    console.log("Update Product Error : ", err)
     res.status(500).json({success: false, message: "Server Error"})
   }
 }
+
