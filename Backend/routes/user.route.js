@@ -1,12 +1,12 @@
 import express from 'express';
 import {createUser, getUser, deleteUser, signinUser} from '../controllers/user.controller.js'
-
+import {protect} from '../middleware/auth.middleware.js'
 const route = express.Router();
 
 route.get('/', getUser);
-route.post('/signup', createUser )
-route.post('/signin', signinUser)
-route.delete('/:id', deleteUser)
+route.post('/signup', protect, createUser )
+route.post('/signin',protect, signinUser)
+route.delete('/:id',protect, deleteUser)
 
 
 
