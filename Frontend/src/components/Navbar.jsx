@@ -15,7 +15,7 @@ import {
 } from "react-icons/fa";
 import { useState, useRef, useEffect } from "react";
 import { styles } from '../styles';
-import { useUserStore } from "../Store/product";
+import { useUserStore } from "../Store/user";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -36,8 +36,8 @@ const Navbar = () => {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-lg border-b border-gray-100">
-      <nav className={`${styles.container} ${styles.flexBetween} py-4`}>
+    <header className="sticky top-0 z-50 bg-black shadow-lg border-b border-gray-100">
+      <nav className={`${styles.container} ${styles.flexBetween}  py-4`}>
         
         {/* Logo and Brand */}
         <Link to="/" className={`${styles.flexStart} space-x-3 cursor-pointer ${styles.hoverScale}`}>
@@ -46,30 +46,31 @@ const Navbar = () => {
             alt="Product Store" 
             className="w-30 h-20 md:w-12 md:h-12 object-contain"
           />
-          <span className="hidden md:inline text-xl font-bold text-gray-900">
+          <span className="hidden md:inline text-xl font-bold text-white">
             Product Store
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center justify-center space-x-3">
+        <div className="hidden md:flex  items-center justify-center space-x-3">
           <Link 
             to="/Products" 
             className={`${styles.navLink} items-center justify-center flex`}
           >
-            <AiOutlineAppstoreAdd className={styles.iconMd} />
-            <span className="ml-2">Products</span>
+            <AiOutlineAppstoreAdd className={`text-white ${styles.iconMd}`} />
+            <span className="ml-2 text-white">Products</span>
           </Link>
 
           <Link 
             to="/CreatePage" 
             className={`${styles.secondaryButton} ${styles.buttonPadding}`}
           >
-            <FaPlus className={styles.iconSm} />
-            <span className="ml-2">Add Product</span>
+            <FaPlus className={`${styles.iconSm} text-white`} />
+            <span className="ml-2 text-white">Add Product</span>
           </Link>
 
-          {user ? (
+          {user ? 
+          (
             <div className="relative" ref={profileRef}>
               {/* Profile Button */}
               <button
@@ -101,25 +102,25 @@ const Navbar = () => {
                     onClick={() => setIsProfileOpen(false)}
                     className={`${styles.flexStart} px-4 py-3 text-gray-700 hover:bg-gray-50 ${styles.transition} cursor-pointer`}
                   >
-                    <FaUserCircle className={`${styles.iconSm} mr-3 text-gray-500`} />
+                    <FaUserCircle className={`${styles.iconSm} mr-3 text-white`} />
                     <span>My Profile</span>
                   </Link>
 
                   <Link 
                     to="/orders" 
                     onClick={() => setIsProfileOpen(false)}
-                    className={`${styles.flexStart} px-4 py-3 text-gray-700 hover:bg-gray-50 ${styles.transition} cursor-pointer`}
+                    className={`${styles.flexStart} px-4 py-3 text-white hover:bg-gray-500 ${styles.transition} cursor-pointer`}
                   >
-                    <FaShoppingCart className={`${styles.iconSm} mr-3 text-gray-500`} />
+                    <FaShoppingCart className={`${styles.iconSm} mr-3 text-white`} />
                     <span>My Orders</span>
                   </Link>
 
                   <Link 
                     to="/settings" 
                     onClick={() => setIsProfileOpen(false)}
-                    className={`${styles.flexStart} px-4 py-3 text-gray-700 hover:bg-gray-50 ${styles.transition} cursor-pointer`}
+                    className={`${styles.flexStart} px-4 py-3 text-white hover:bg-gray-500 ${styles.transition} cursor-pointer`}
                   >
-                    <FaCog className={`${styles.iconSm} mr-3 text-gray-500`} />
+                    <FaCog className={`${styles.iconSm} mr-3 text-white`} />
                     <span>Settings</span>
                   </Link>
 
@@ -139,7 +140,8 @@ const Navbar = () => {
                 </div>
               )}
             </div>
-          ) : (
+          ) : 
+          (
             <>
               <Link 
                 to="/SignIn" 
