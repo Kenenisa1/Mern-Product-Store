@@ -33,17 +33,17 @@ const styles = {
     // --- Link Styles ---
     primaryLink: "text-indigo-600 hover:text-indigo-800 font-medium transition-all duration-300 hover:underline decoration-2 underline-offset-4",
     secondaryLink: "text-gray-600 hover:text-gray-900 transition-colors duration-300",
-    navLink: "text-gray-700 hover:text-indigo-600 transition-colors duration-300 font-medium px-3 py-2 rounded-lg hover:bg-indigo-50",
+    navLink: "text-white hover:text-blue-600 transition-colors duration-400 font-medium px-3 py-2 rounded-lg hover:underline hover:decoration-2 hover:underline-offset-2",
     
     // --- Button Styles ---
     // Primary Button: Strong gradient background
     primaryButton: "inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer",
     
     // Secondary Button: Outline with hover effect
-    secondaryButton: "inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-indigo-600 border-2 border-indigo-600 rounded-lg hover:bg-indigo-50 transition-all duration-300 hover:border-indigo-700 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer",
+    secondaryButton: "inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-indigo-600 border-2 border-indigo-600 rounded-lg hover:bg-indigo-600 transition-all duration-300 hover:border-indigo-700 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer",
     
     // Ghost Button: Minimal
-    ghostButton: "inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-300 cursor-pointer",
+    ghostButton: "inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white  hover:underline hover:decoration-2 hover:underline-offset-2 rounded-lg transition-colors duration-300 cursor-pointer",
     
     // Danger Button
     dangerButton: "inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-rose-600 rounded-lg hover:from-red-700 hover:to-rose-700 transition-all duration-300 shadow-lg hover:shadow-xl cursor-pointer",
