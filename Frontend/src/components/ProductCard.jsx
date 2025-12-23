@@ -327,9 +327,11 @@ const ProductCard = ({ product }) => {
               className={`
                 ${styles.secondaryButton}
                 flex items-center space-x-1
-                text-gray-600 hover:text-indigo-600
+                text-gray-600
                 border border-gray-300 hover:border-indigo-400
-                cursor-pointer
+                cursor-pointer hover:text-white
+                transition-all duration-300
+                min-w-[100px]
               `}
               onClick={handleEditClick}
             >
