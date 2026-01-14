@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 export const signupUser = async (req, res) => {
   try {
@@ -8,25 +8,26 @@ export const signupUser = async (req, res) => {
     if (!username || !email || !password) {
       return res.status(400).json({
         success: false,
-        message: "Please provide all required fields"
+        message: "Please provide all required fields",
       });
     }
 
     const existingUser = await User.findOne({
       $or: [
         { email: email.toLowerCase() },
-        { username: username.toLowerCase() }
-      ]
+        { username: username.toLowerCase() },
+      ],
     });
 
     if (existingUser) {
-      const message = existingUser.email === email.toLowerCase()
-        ? "Email already registered"
-        : "Username already taken";
+      const message =
+        existingUser.email === email.toLowerCase()
+          ? "Email already registered"
+          : "Username already taken";
 
       return res.status(400).json({
         success: false,
-        message
+        message,
       });
     }
 
@@ -34,7 +35,7 @@ export const signupUser = async (req, res) => {
       username: username.toLowerCase(),
       email: email.toLowerCase(),
       password,
-      isAdmin: false
+      isAdmin: false,
     });
 
     res.status(201).json({
@@ -45,8 +46,8 @@ export const signupUser = async (req, res) => {
         username: user.username,
         email: user.email,
         isAdmin: user.isAdmin,
-        createdAt: user.createdAt
-      }
+        createdAt: user.createdAt,
+      },
     });
   } catch (error) {
     console.error("User signup error:", error.message);
@@ -54,21 +55,21 @@ export const signupUser = async (req, res) => {
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
-        message: "Username or email already exists"
+        message: "Username or email already exists",
       });
     }
 
     if (error.name === "ValidationError") {
-      const messages = Object.values(error.errors).map(err => err.message);
+      const messages = Object.values(error.errors).map((err) => err.message);
       return res.status(400).json({
         success: false,
-        message: messages.join(", ")
+        message: messages.join(", "),
       });
     }
 
     res.status(500).json({
       success: false,
-      message: "Registration failed"
+      message: "Registration failed",
     });
   }
 };
@@ -80,35 +81,35 @@ export const signinUser = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: "Email and password required"
+        message: "Email and password required",
       });
     }
 
     const user = await User.findOne({ email: email.toLowerCase() });
-    
+
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials"
+        message: "Invalid credentials",
       });
     }
 
     const isPasswordValid = await user.comparePassword(password);
-    
+
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials"
+        message: "Invalid credentials",
       });
     }
 
     const token = jwt.sign(
-      { 
+      {
         id: user._id,
-        isAdmin: user.isAdmin 
+        isAdmin: user.isAdmin,
       },
       process.env.AUTH_SECRET,
-      { expiresIn: '30d' }
+      { expiresIn: "30d" }
     );
 
     res.status(200).json({
@@ -118,15 +119,15 @@ export const signinUser = async (req, res) => {
         _id: user._id,
         username: user.username,
         email: user.email,
-        isAdmin: user.isAdmin
+        isAdmin: user.isAdmin,
       },
-      token
+      token,
     });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({
       success: false,
-      message: "Login failed"
+      message: "Login failed",
     });
   }
 };
@@ -138,13 +139,13 @@ export const getUsers = async (req, res) => {
     res.status(200).json({
       success: true,
       count: users.length,
-      data: users
+      data: users,
     });
   } catch (error) {
     console.error("Get users error:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to retrieve users"
+      message: "Failed to retrieve users",
     });
   }
 };
@@ -156,7 +157,7 @@ export const deleteUser = async (req, res) => {
     if (req.user.id === id) {
       return res.status(400).json({
         success: false,
-        message: "Cannot delete your own account"
+        message: "Cannot delete your own account",
       });
     }
 
@@ -165,7 +166,7 @@ export const deleteUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found"
+        message: "User not found",
       });
     }
 
@@ -174,13 +175,13 @@ export const deleteUser = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Account disabled"
+      message: "Account disabled",
     });
   } catch (error) {
     console.error("Delete user error:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to delete user"
+      message: "Failed to delete user",
     });
   }
 };
@@ -192,19 +193,19 @@ export const getProfile = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found"
+        message: "User not found",
       });
     }
 
     res.status(200).json({
       success: true,
-      user: user.toProfileJSON()
+      user: user.toProfileJSON(),
     });
   } catch (error) {
     console.error("Get profile error:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to retrieve profile"
+      message: "Failed to retrieve profile",
     });
   }
 };
@@ -221,12 +222,12 @@ export const updateProfile = async (req, res) => {
     if (username) {
       const existingUser = await User.findOne({
         username,
-        _id: { $ne: userId }
+        _id: { $ne: userId },
       });
       if (existingUser) {
         return res.status(400).json({
           success: false,
-          message: "Username unavailable"
+          message: "Username unavailable",
         });
       }
     }
@@ -234,48 +235,47 @@ export const updateProfile = async (req, res) => {
     if (email) {
       const existingUser = await User.findOne({
         email,
-        _id: { $ne: userId }
+        _id: { $ne: userId },
       });
       if (existingUser) {
         return res.status(400).json({
           success: false,
-          message: "Email already registered"
+          message: "Email already registered",
         });
       }
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId, 
-      updateData,
-      { new: true, runValidators: true }
-    ).select("-password");
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
 
     res.status(200).json({
       success: true,
       message: "Profile updated",
-      user: updatedUser.toProfileJSON()
+      user: updatedUser.toProfileJSON(),
     });
   } catch (error) {
     console.error("Update profile error:", error);
 
     if (error.name === "ValidationError") {
-      const messages = Object.values(error.errors).map(err => err.message);
+      const messages = Object.values(error.errors).map((err) => err.message);
       return res.status(400).json({
         success: false,
-        message: messages.join(", ")
+        message: messages.join(", "),
       });
     }
 
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
-        message: "Duplicate field value"
+        message: "Duplicate field value",
       });
     }
 
     res.status(500).json({
       success: false,
-      message: "Update failed"
+      message: "Update failed",
     });
   }
 };
