@@ -1,13 +1,26 @@
 import express from 'express';
-import {createUser, getUser, deleteUser, signinUser} from '../controllers/user.controller.js'
-import {protect} from '../middleware/auth.middleware.js'
-const route = express.Router();
+import {
+  signupUser,
+  signinUser,
+  getUsers,
+  deleteUser,
+  getProfile,
+  updateProfile,
+} from '../controllers/user.controller.js';
+import { protect, admin } from '../middleware/auth.middleware.js';
 
-route.get('/', getUser);
-route.post('/signup', protect, createUser )
-route.post('/signin',protect, signinUser)
-route.delete('/:id',protect, deleteUser)
+const router = express.Router();
 
+// Authentication routes
+router.post('/signup', signupUser);
+router.post('/signin', signinUser);
 
+// User profile routes
+router.get('/profile', protect, getProfile);
+router.put('/profile', protect, updateProfile);
 
-export default route;
+// Admin management routes
+router.get('/', protect, admin, getUsers);
+router.delete('/:id', protect, admin, deleteUser);
+
+export default router;
