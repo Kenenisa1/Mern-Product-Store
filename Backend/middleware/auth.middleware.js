@@ -1,35 +1,86 @@
+import { verifyToken } from "../utils/tokenUtils.js";
+import User from "../models/user.model.js";
 
-export const protect = (req, res, next) => {
-    const AUTH_SECRET = process.env.AUTH_SECRET;
-    console.log("Server's Loaded AUTH_SECRET:", AUTH_SECRET);
-    const authHeader = req.headers.authorization;
+// Authentication middleware - validates JWT tokens
+export const protect = async (req, res, next) => {
+  try {
+    let token;
 
-    if( !authHeader) 
-    {
-        return res.status(401).json({ 
-            success: false,
-            message: "Access denied. No authorization header provided."
-        })
+    if (req.headers.authorization?.startsWith("Bearer")) {
+      token = req.headers.authorization.split(" ")[1];
     }
 
-    const parts = authHeader.split(' ');
-
-    if(parts.length !==2 || parts[0].toLowerCase() !== 'bearer')
-    {
-        return res.status(401).json({
-            success: false,
-            message: "Access denied. Invalid authorization header format."
-        })
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required",
+      });
     }
 
-    const token = parts[1];
+    const decoded = verifyToken(token);
 
-    if( token !== AUTH_SECRET) {
-        return res.status(403).json({
-            success: false,
-            message: "forbidden. Invalid authorization token."
-        })
+    if (!decoded) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid or expired token",
+      });
     }
 
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (!user.isActive) {
+      return res.status(401).json({
+        success: false,
+        message: "Account disabled",
+      });
+    }
+
+    req.user = user;
     next();
-}
+  } catch (error) {
+    console.error("Auth error:", error.message);
+    return res.status(401).json({
+      success: false,
+      message: "Authentication failed",
+    });
+  }
+};
+
+// Admin authorization middleware
+export const admin = (req, res, next) => {
+  if (!req.user?.isAdmin) {
+    return res.status(403).json({
+      success: false,
+      message: "Admin access required",
+    });
+  }
+  next();
+};
+
+// Optional authentication for public routes with user context
+export const optionalAuth = async (req, res, next) => {
+  try {
+    if (req.headers.authorization?.startsWith("Bearer")) {
+      const token = req.headers.authorization.split(" ")[1];
+      const decoded = verifyToken(token);
+
+      if (decoded) {
+        const user = await User.findById(decoded.id).select("-password");
+        if (user?.isActive) {
+          req.user = user;
+        }
+      }
+    }
+    next();
+  } catch (error) {
+    // Silent failure for optional authentication
+    next();
+  }
+};
