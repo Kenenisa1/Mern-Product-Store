@@ -1,6 +1,5 @@
- @import "tailwindcss";
+@import "tailwindcss";
 
- /* Add to your global CSS file (index.css or App.css) */
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -16,7 +15,6 @@
   animation: slideDown 0.3s ease-out;
 }
 
-/* In your index.css or App.css */
 @keyframes slideUp {
   from {
     opacity: 0;
@@ -45,4 +43,27 @@
 
 .animate-slideUp {
   animation: slideUp 0.3s ease-out;
+}
+
+.bg-grid-pattern {
+  background-image: linear-gradient(
+      to right,
+      rgba(99, 102, 241, 0.1) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 3s ease infinite;
+}
+@keyframes gradient-x {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
