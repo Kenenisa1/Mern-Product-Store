@@ -46,7 +46,8 @@ const Contact = () => {
     {
       icon: <FaPhone className="text-white text-xl" />,
       title: "Call Us",
-      details: ["+251 964 762 288", "+251 912 345 678"],
+      id: "phone",
+      details: ["+251 964 762 288", "+251 702 929 800"],
       bgColor: "bg-linear-to-br from-purple-500 to-pink-600",
       action: "tel:+251964762288"
     },
@@ -157,7 +158,7 @@ const Contact = () => {
                   <FaArrowRight />
                 </a>
                 <a 
-                  href="tel:+251964762288"
+                  href="#phone"
                   className="inline-flex items-center gap-3 bg-transparent border-2 border-indigo-500 text-black font-bold px-8 py-4 rounded-xl hover:bg-white/10 transition-all duration-300"
                 >
                   <FaPhone />
@@ -239,7 +240,7 @@ const Contact = () => {
                     className="block group"
                   >
                     <div className="flex items-start gap-4 p-4 rounded-xl hover:bg-indigo-50 transition-all duration-300">
-                      <div className={`${info.bgColor} p-4 rounded-xl group-hover:scale-110 transition-transform duration-300`}>
+                      <div id="phone" className={`${info.bgColor} p-4 rounded-xl group-hover:scale-110 transition-transform duration-300`}>
                         {info.icon}
                       </div>
                       <div className="flex-1">

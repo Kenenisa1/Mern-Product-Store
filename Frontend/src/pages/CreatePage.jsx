@@ -1,43 +1,61 @@
-import { useState, useRef } from "react";
-import { FaBookMedical, FaUpload } from "react-icons/fa";
+import { useState, useRef, useEffect } from "react";
+import { FaBookMedical, FaUpload, FaImage, FaTimes } from "react-icons/fa";
 import { useProductStore } from "../Store/product";
+import { useUserStore } from "../Store/user";
 import { styles } from "../styles";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const CreatePage = () => {
-  const [newProduct, setNewProduct] = useState({
+  const navigate = useNavigate();
+  const { user, token } = useUserStore();
+  const { createProduct, isLoading: isCreating } = useProductStore();
+  
+  const [formData, setFormData] = useState({
     name: "",
     price: "",
-    image: "",
+    description: "",
   });
   const [imageFile, setImageFile] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
-  const { createProduct } = useProductStore();
+  // Check if user is admin
+  useEffect(() => {
+    if (!user || !token) {
+      toast.error("Please login first");
+      navigate("/signin");
+      return;
+    }
+    
+    if (user.isAdmin !== true) {
+      toast.error("Admin access required");
+      navigate("/");
+    }
+  }, [user, token, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewProduct((prev) => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  // handle file change
+  // Handle file selection
   const handleFileChange = (e) => {
     const file = e.target.files[0];
 
     if (!file) return;
 
-    // validate file type
+    // Validate file type
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select a valide image file!");
+      toast.error("Please select a valid image file (JPG, PNG, GIF, etc.)");
       return;
     }
 
-    // validate file size (max 5MB)
+    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       toast.error("Image size should be less than 5MB!");
       return;
@@ -45,7 +63,7 @@ const CreatePage = () => {
 
     setImageFile(file);
 
-    // create image preview
+    // Create image preview
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result);
@@ -53,77 +71,114 @@ const CreatePage = () => {
     reader.readAsDataURL(file);
   };
 
-  // trigger file input click
+  // Trigger file input click
   const handleUploadClick = () => {
     fileInputRef.current.click();
   };
 
-  // remove selected image
+  // Remove selected image
   const handleRemoveImage = () => {
     setImageFile(null);
     setImagePreview(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = " ";
+      fileInputRef.current.value = "";
     }
   };
 
-  const handleAddProduct = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!newProduct.name || !newProduct.price || !imageFile) {
-      toast.error(
-        "Please fill in all the required fields and select an image!"
-      );
+    // Validate required fields
+    if (!formData.name || !formData.price || !imageFile) {
+      toast.error("Please fill in all required fields and select an image!");
       return;
     }
 
-    // Validate price is a positive number
-    if (parseFloat(newProduct.price) <= 0) {
+    // Validate price
+    if (parseFloat(formData.price) <= 0) {
       toast.error("Price must be greater than 0.");
       return;
     }
 
-    setIsUploading(true);
+    // Validate stock
+    if (formData.countInStock && parseInt(formData.countInStock) < 0) {
+      toast.error("Stock cannot be negative.");
+      return;
+    }
+
+    setUploading(true);
 
     try {
-      const formData = new FormData();
-      formData.append("name", newProduct.name);
-      formData.append("price", newProduct.price);
-      formData.append("image", imageFile);
-
-      const [success, message] = await createProduct(formData);
-      if (!success) {
-        toast.error(message);
+      // Create FormData for file upload
+      const productFormData = new FormData();
+      
+      // Append text fields
+      productFormData.append("name", formData.name);
+      productFormData.append("price", formData.price);
+      if (formData.description) {
+        productFormData.append("description", formData.description);
       }
-       else {
-        toast.success(message);
-        setNewProduct({ name: "", price: "" });
+      if (formData.category) {
+        productFormData.append("category", formData.category);
+      }
+      if (formData.countInStock) {
+        productFormData.append("countInStock", formData.countInStock);
+      }
+      
+      // Append image file
+      productFormData.append("image", imageFile);
+      
+      // Call createProduct with FormData
+      const result = await createProduct(productFormData);
+      
+      if (result.success) {
+        toast.success(result.message || "Product created successfully!");
+        
+        // Reset form
+        setFormData({
+          name: "",
+          price: "",
+          description: "",
+          category: "",
+          countInStock: "",
+        });
         setImageFile(null);
         setImagePreview(null);
-
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
+        
+        // Optionally navigate to products page
+        // navigate("/products");
+      } else {
+        toast.error(result.message || "Failed to create product.");
       }
-
-    }
-     catch (error) {
-      console.error("API call failed:", error);
-      toast.error("An unexpected error occurred during creation.");
+    } catch (error) {
+      console.error("Create product error:", error);
+      toast.error(error.message || "An unexpected error occurred.");
     } finally {
-      setIsUploading(false);
+      setUploading(false);
     }
   };
 
+  if (!user || user.isAdmin !== true) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">
+            Access Denied
+          </h1>
+          <p className="text-gray-600">Admin privileges required to access this page.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div
-      className={`${styles.containerNarrow} ${styles.flexCenter} min-h-screen ${styles.sectionPadding} ${styles.bgGradientPrimary}`}
-    >
+    <div className={`${styles.containerNarrow} ${styles.flexCenter} min-h-screen ${styles.sectionPadding} ${styles.bgGradientPrimary}`}>
       <div className={`${styles.formContainer} w-full`}>
         <div className={`${styles.flexCenter} flex-col mb-8`}>
-          <FaBookMedical
-            className={`${styles.iconXl} text-indigo-600 mb-4 ${styles.hoverScale}`}
-          />
+          <FaBookMedical className={`${styles.iconXl} text-indigo-600 mb-4 ${styles.hoverScale}`} />
           <h1 className={`${styles.h2} ${styles.gradientText} mb-2`}>
             Add New Product
           </h1>
@@ -132,46 +187,86 @@ const CreatePage = () => {
           </p>
         </div>
 
-        <form onSubmit={handleAddProduct} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Product Name */}
           <div>
             <label htmlFor="name" className={styles.inputLabel}>
-              Product Name
+              Product Name *
             </label>
             <input
               type="text"
               id="name"
               name="name"
-              placeholder="e.g., Earphone"
+              placeholder="e.g., Wireless Headphones"
+              value={formData.name}
               onChange={handleChange}
-              value={newProduct.name}
               required
               className={styles.input}
-              disabled={isUploading}
+              disabled={uploading || isCreating}
             />
           </div>
 
+          {/* Price */}
           <div>
             <label htmlFor="price" className={styles.inputLabel}>
-              Price
+              Price *
             </label>
             <input
               type="number"
               id="price"
               name="price"
-              placeholder="e.g 5"
+              placeholder="e.g., 99.99"
+              value={formData.price}
               onChange={handleChange}
-              value={newProduct.price}
               required
-              min="0.01"
-              step="0.01"
+              min="1"
+              step="1"
               className={styles.input}
-              disabled={isUploading}
+              disabled={uploading || isCreating}
             />
           </div>
 
+          {/* Description */}
           <div>
-            <label className={styles.inputLabel}>Product Image *</label>
+            <label htmlFor="description" className={styles.inputLabel}>
+              Description
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              placeholder="Product description..."
+              value={formData.description}
+              onChange={handleChange}
+              rows="3"
+              className={styles.input}
+              disabled={uploading || isCreating}
+            />
+          </div>
 
+          {/* Category */}
+          <div>
+            <label htmlFor="category" className={styles.inputLabel}>
+              Category
+            </label>
+            <input
+              type="text"
+              id="category"
+              name="category"
+              placeholder="e.g., Electronics, Clothing"
+              value={formData.category}
+              onChange={handleChange}
+              className={styles.input}
+              disabled={uploading || isCreating}
+            />
+          </div>
+
+
+          {/* Image Upload */}
+          <div>
+            <label className={styles.inputLabel}>
+              Product Image *
+            </label>
+            
             {/* Hidden File Input */}
             <input
               type="file"
@@ -179,7 +274,7 @@ const CreatePage = () => {
               onChange={handleFileChange}
               accept="image/*"
               className="hidden"
-              disabled={isUploading}
+              disabled={uploading || isCreating}
             />
 
             {/* Upload Area */}
@@ -188,16 +283,13 @@ const CreatePage = () => {
                 // Upload prompt
                 <div
                   onClick={handleUploadClick}
-                  className={`border-2 border-dashed border-gray-300 ${
-                    styles.roundedLg
-                  } p-8 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-300 ${
-                    isUploading ? "opacity-50 cursor-not-allowed" : ""
+                  className={`border-2 border-dashed border-gray-300 ${styles.roundedLg} p-8 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-300 ${
+                    uploading || isCreating ? "opacity-50 cursor-not-allowed" : ""
                   }`}
+                  style={{ pointerEvents: uploading || isCreating ? "none" : "auto" }}
                 >
                   <div className={`${styles.flexCenter} flex-col`}>
-                    <FaUpload
-                      className={`${styles.iconXl} text-gray-400 mb-4`}
-                    />
+                    <FaUpload className={`${styles.iconXl} text-gray-400 mb-4`} />
                     <p className="text-gray-600 font-medium mb-1">
                       Click to upload product image
                     </p>
@@ -207,7 +299,7 @@ const CreatePage = () => {
                     <button
                       type="button"
                       className={`${styles.secondaryButton} mt-4 px-4 py-2`}
-                      disabled={isUploading}
+                      disabled={uploading || isCreating}
                     >
                       Browse Files
                     </button>
@@ -215,16 +307,10 @@ const CreatePage = () => {
                 </div>
               ) : (
                 // Image Preview
-                <div
-                  className={`${styles.card} p-4 ${
-                    isUploading ? "opacity-70" : ""
-                  }`}
-                >
+                <div className={`${styles.card} p-4 ${uploading || isCreating ? "opacity-70" : ""}`}>
                   <div className={`${styles.flexBetween} mb-3`}>
                     <div className={`${styles.flexStart}`}>
-                      <FaImage
-                        className={`${styles.iconMd} text-indigo-600 mr-2`}
-                      />
+                      <FaImage className={`${styles.iconMd} text-indigo-600 mr-2`} />
                       <span className="font-medium text-gray-900">
                         Selected Image
                       </span>
@@ -233,9 +319,9 @@ const CreatePage = () => {
                       type="button"
                       onClick={handleRemoveImage}
                       className={`${styles.ghostButton} text-red-600 hover:text-red-700`}
-                      disabled={isUploading}
+                      disabled={uploading || isCreating}
                     >
-                      Remove
+                      <FaTimes className="mr-1" /> Remove
                     </button>
                   </div>
 
@@ -243,7 +329,7 @@ const CreatePage = () => {
                     <img
                       src={imagePreview}
                       alt="Preview"
-                      className="max-h-64 object-contain rounded-lg"
+                      className="max-h-64 max-w-full object-contain rounded-lg"
                     />
                   </div>
 
@@ -252,7 +338,7 @@ const CreatePage = () => {
                       type="button"
                       onClick={handleUploadClick}
                       className={`${styles.secondaryButton} px-4 py-2`}
-                      disabled={isUploading}
+                      disabled={uploading || isCreating}
                     >
                       Change Image
                     </button>
@@ -260,29 +346,35 @@ const CreatePage = () => {
                 </div>
               )}
             </div>
-
-            <p className={`${styles.inputHelper} mt-2`}>
-              Required. Maximum file size: 5MB
-            </p>
+            
+            {imageFile && (
+              <p className={`${styles.small} mt-2 text-gray-600`}>
+                Selected file: {imageFile.name} ({(imageFile.size / 1024).toFixed(2)} KB)
+              </p>
+            )}
           </div>
 
+          {/* Submit Button */}
           <div className="pt-4">
             <button
               type="submit"
-              className={`${styles.primaryButton} w-full h-12 text-base`}
+              className={`${styles.primaryButton} w-full h-12 text-base ${
+                uploading || isCreating ? "opacity-70 cursor-not-allowed" : ""
+              }`}
+              disabled={uploading || isCreating}
             >
-              <FaBookMedical className={`${styles.iconMd} mr-2`} />
-              <span>Publish Product</span>
+              {uploading || isCreating ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  {uploading ? "Uploading..." : "Creating Product..."}
+                </>
+              ) : (
+                <>
+                  <FaBookMedical className={`${styles.iconMd} mr-2`} />
+                  <span>Publish Product</span>
+                </>
+              )}
             </button>
-          </div>
-
-          <div className="pt-4 border-t border-gray-200">
-            <p className={`${styles.small} text-center`}>
-              Need help?{" "}
-              <a href="#" className={styles.primaryLink}>
-                View product guidelines
-              </a>
-            </p>
           </div>
         </form>
       </div>
