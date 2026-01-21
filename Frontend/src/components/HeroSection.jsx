@@ -16,7 +16,7 @@ const HeroSection = () => {
             <div className="text-center lg:text-left">
               {/* Badge */}
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full mb-6">
-                <span className="font-medium">WEL COME TO S.MARKET PREVIEW</span>
+                <span className="font-medium">WEL COME TO MARVISTA</span>
               </div>
 
               {/* Main Headline */}

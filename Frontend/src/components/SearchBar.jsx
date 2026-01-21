@@ -1,4 +1,3 @@
-// components/SearchBar.jsx
 import { useState, useEffect, useRef } from 'react';
 import { FaSearch, FaTimes } from 'react-icons/fa';
 import { useProductStore } from '../Store/product';
@@ -60,12 +59,6 @@ const SearchBar = () => {
         )}
       </div>
 
-      {/* Search instructions */}
-      <div className="text-center mt-2">
-        <p className="text-sm text-gray-500">
-          Try searching by product name or price (e.g., "earpod" or "35")
-        </p>
-      </div>
     </div>
   );
 };

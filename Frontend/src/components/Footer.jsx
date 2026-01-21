@@ -1,100 +1,138 @@
-import React from 'react'
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaGithub, FaMapMarkerAlt, FaEnvelope, FaPhone, FaClock } from 'react-icons/fa'
-import { Link } from 'react-router-dom'
-import { styles } from '../styles'
+import { FaFacebook, FaLinkedin, FaGithub, FaMapMarkerAlt, FaEnvelope, FaPhone, FaClock, FaArrowUp } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { styles } from '../styles';
+import logo from '../assets/logo.png';
+import React from 'react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  
+
   const socialLinks = [
-    { icon: FaFacebook, href: "https://web.facebook.com/profile.php?id=100084359453118", label: "Facebook" },
-    { icon: FaTwitter, href: "#", label: "Twitter" },
-    { icon: FaInstagram, href: "#", label: "Instagram" },
-    { icon: FaLinkedin, href: "https://www.linkedin.com/in/kenenisa-mieso/", label: "LinkedIn" },
-    { icon: FaGithub, href: "https://github.com/Kenenisa1", label: "GitHub" }
+    { 
+      icon: FaFacebook, 
+      href: "https://web.facebook.com/profile.php?id=100084359453118", 
+      label: "Facebook"
+    },
+    { 
+      icon: FaLinkedin, 
+      href: "https://www.linkedin.com/in/kenenisa-mieso/", 
+      label: "LinkedIn"
+    },
+    { 
+      icon: FaGithub, 
+      href: "https://github.com/Kenenisa1", 
+      label: "GitHub"
+    }
   ];
 
   const quickLinks = [
-    { path: '/Home', label: 'Home' },
-    { path: '/', label: 'All Products' },
-    { path: '/CreatePage', label: 'Add Product' },
-    { path: '/about', label: 'About Us' },
+    { path: '/', label: 'Home' },
+    { path: '/products', label: 'Products' },
+    { path: '/add-product', label: 'Add Product' },
+    { path: '/about', label: 'About' },
     { path: '/contact', label: 'Contact' }
   ];
 
   const contactInfo = [
-    { icon: FaMapMarkerAlt, text: 'Abyssinia Building 3rd floor, Arba Minch, Ethiopia' },
-    { icon: FaEnvelope, text: 'kenenisamb@gmail.com' },
-    { icon: FaPhone, text: '+251 964 762 288' },
-    { icon: FaClock, text: 'Mon-Fri: 9AM-6PM' }
+    { 
+      icon: FaMapMarkerAlt, 
+      text: 'Rahma Mosque, Shashamene, Ethiopia'
+    },
+    { 
+      icon: FaEnvelope, 
+      text: 'kenenisamb@gmail.com'
+    },
+    { 
+      icon: FaPhone, 
+      text: '+251 964 762 288'
+    },
+    { 
+      icon: FaClock, 
+      text: 'Mon-Fri: 9AM-6PM'
+    }
   ];
 
   const policyLinks = [
     { path: '/privacy', label: 'Privacy Policy' },
     { path: '/terms', label: 'Terms of Service' },
-    { path: '/cookies', label: 'Cookie Policy' }
+    { path: '/faq', label: 'FAQ' }
   ];
 
-  return (
-    <footer className="-linear-to-rbg-linear-to-r from-slate-900 via-gray-900 to-slate-950 text-white mt-16 pt-16 pb-8 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-      
-      {/* Animated Gradient Border */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-transparent via-indigo-600 to-transparent animate-gradient-x"></div>
+  const [showScrollTop, setShowScrollTop] = React.useState(false);
 
-      <div className={`${styles.container} relative z-10`}>
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-12">
-          
-          {/* Brand Section */}
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <footer className="bg-linear-to-r from-indigo-900 via-purple-900 to-indigo-900 text-white pt-12 pb-6 relative">
+      <div className={styles.container + " relative z-10"}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+          {/* Brand Column */}
           <div className="space-y-6">
-            <div className="space-y-3">
-              <h2 className="text-3xl font-bold bg-linear-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-                Product Store
-              </h2>
-              <p className="text-slate-300 leading-relaxed max-w-md">
-                Your premier destination for curated quality products. Experience excellence in every purchase.
-              </p>
-            </div>
-            
+            <Link to='/' className="inline-block group">
+              <div className="flex items-center space-x-3">
+                <div className="relative">
+                  <img 
+                    src={logo} 
+                    alt="MarVista" 
+                    className="w-14 h-14 md:w-16 md:h-16 object-contain transition-all duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold">MarVista</h2>
+                  <p className="text-indigo-200 text-sm">Smart Market Preview</p>
+                </div>
+              </div>
+            </Link>
+
+            <p className="text-indigo-200 text-sm leading-relaxed">
+              Your destination for stress-free market shopping. Browse before you buy.
+            </p>
+
             {/* Social Links */}
-            <div className="flex items-center space-x-4">
-              {socialLinks.map((social, index) => {
-                const Icon = social.icon;
-                return (
-                  <a
-                    key={index}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group relative p-2.5 bg-slate-800/50 hover:bg-slate-800 rounded-full transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/20"
-                    aria-label={social.label}
-                  >
-                    <Icon className="w-5 h-5 text-slate-300 group-hover:text-white transition-colors" />
-                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-linear-to-r from-indigo-500 to-purple-500 group-hover:w-8 transition-all duration-300"></div>
-                  </a>
-                );
-              })}
+            <div className="pt-2">
+              <div className="flex items-center space-x-2">
+                {socialLinks.map((social, index) => {
+                  const Icon = social.icon;
+                  return (
+                    <a
+                      key={index}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 bg-indigo-800/50 hover:bg-indigo-700 rounded-lg transition-all duration-300 hover:-translate-y-1"
+                      aria-label={social.label}
+                    >
+                      <Icon className="w-4 h-4" />
+                    </a>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-xl font-semibold mb-6 linear-to-r-linear-to-rbg-linear-to-r border-slate-800 inline-block">
-              Quick Links
-            </h3>
-            <ul className="space-y-3">
+            <h3 className="text-base font-semibold mb-4 pb-2 border-b border-white/20">Quick Links</h3>
+            <ul className="space-y-2">
               {quickLinks.map((link, index) => (
                 <li key={index}>
                   <Link 
                     to={link.path}
-                    className={`${styles.flexStart} text-slate-300 hover:text-indigo-400 ${styles.transition} cursor-pointer group py-2`}
+                    className="text-sm text-indigo-200 hover:text-white transition-colors duration-200 flex items-center group"
                   >
-                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <span className="font-medium group-hover:translate-x-2 transition-transform duration-300">
-                      {link.label}
-                    </span>
+                    <span className="w-1 h-1 bg-indigo-500 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    {link.label}
                   </Link>
                 </li>
               ))}
@@ -103,89 +141,88 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-xl font-semibold mb-6 linear-to-r-linear-to-rbg-linear-to-r border-slate-800 inline-block">
-              Contact Us
-            </h3>
-            <ul className="space-y-4">
+            <h3 className="text-base font-semibold mb-4 pb-2 border-b border-white/20">Contact Info</h3>
+            <ul className="space-y-3">
               {contactInfo.map((item, index) => {
                 const Icon = item.icon;
                 return (
-                  <li key={index} className={`${styles.flexStart} text-slate-300 group`}>
-                    <div className="p-2 mr-3 bg-slate-800/50 rounded-lg group-hover:bg-slate-800 transition-colors">
-                      <Icon className="w-4 h-4 text-indigo-400" />
+                  <li key={index} className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-indigo-800/50 rounded-lg flex items-center justify-center shrink-0 mt-1">
+                      <Icon className="w-3 h-3 text-indigo-300" />
                     </div>
-                    <span className="font-medium">{item.text}</span>
+                    <span className="text-sm text-indigo-200 leading-tight">
+                      {item.text}
+                    </span>
                   </li>
                 );
               })}
             </ul>
           </div>
 
-        </div>
-
-        {/* Divider with Gradient */}
-        <div className="relative my-12">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-800"></div>
-          </div>
-          <div className="relative flex justify-center">
-            <span className="px-4 bg-slate-900 text-slate-400 text-sm font-medium">
-              Excellence Delivered
-            </span>
+          {/* Useful Resources */}
+          <div>
+            <h3 className="text-base font-semibold mb-4 pb-2 border-b border-white/20">Resources</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/help" className="text-sm text-indigo-200 hover:text-white transition-colors">
+                  Help Center
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog" className="text-sm text-indigo-200 hover:text-white transition-colors">
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link href="/support" className="text-sm text-indigo-200 hover:text-white transition-colors">
+                  Support
+                </Link>
+              </li>
+              <li>
+                <Link href="/developers" className="text-sm text-indigo-200 hover:text-white transition-colors">
+                  Developers
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-slate-800">
-          <p className="text-slate-400 text-sm mb-4 md:mb-0">
-            © {currentYear} <span className="text-indigo-400 font-semibold">Product Store</span>. All rights reserved.
-          </p>
-          
-          <div className="flex items-center space-x-6">
-            {policyLinks.map((policy, index) => (
-              <Link
-                key={index}
-                to={policy.path}
-                className="text-slate-400 hover:text-indigo-400 text-sm font-medium transition-colors duration-300 relative group"
-              >
-                {policy.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-linear-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
-              </Link>
-            ))}
+        <div className="border-t border-white/10 pt-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-center md:text-left">
+              <p className="text-sm text-indigo-300">
+                © {currentYear} MarVista. All rights reserved.
+              </p>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              {policyLinks.map((policy, index) => (
+                <Link
+                  key={index}
+                  to={policy.path}
+                  className="text-xs text-indigo-300 hover:text-white transition-colors"
+                >
+                  {policy.label}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
-
-        {/* Back to Top Button */}
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-8 right-8 p-3 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 z-50"
-          aria-label="Back to top"
-        >
-          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-          </svg>
-        </button>
       </div>
 
-      {/* Add to global CSS or use inline style */}
-      <style jsx>{`
-        .bg-grid-pattern {
-          background-image: 
-            linear-gradient(to right, rgba(99, 102, 241, 0.1) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
-          background-size: 40px 40px;
-        }
-        .animate-gradient-x {
-          background-size: 200% 200%;
-          animation: gradient-x 3s ease infinite;
-        }
-        @keyframes gradient-x {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-      `}</style>
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 p-3 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-lg shadow-lg transition-all duration-300 cursor-pointer z-50 border border-white/10"
+          aria-label="Back to top"
+        >
+          <FaArrowUp className="w-4 h-4 text-white" />
+        </button>
+      )}
     </footer>
-  )
-}
+  );
+};
 
 export default Footer;
