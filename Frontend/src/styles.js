@@ -1,3 +1,4 @@
+// src/styles/index.js
 const styles = {
     // --- Layout & Container Styles ---
     container: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
@@ -40,7 +41,7 @@ const styles = {
     primaryButton: "inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer",
     
     // Secondary Button: Outline with hover effect
-    secondaryButton: "inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-indigo-600 border-2 border-indigo-600 rounded-lg hover:bg-indigo-600 transition-all duration-300 hover:border-indigo-700 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer",
+    secondaryButton: "inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white border-2 border-white rounded-lg hover:bg-indigo-600 transition-all duration-300 hover:border-indigo-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer",
     
     // Ghost Button: Minimal
     ghostButton: "inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white  hover:underline hover:decoration-2 hover:underline-offset-2 rounded-lg transition-colors duration-300 cursor-pointer",
@@ -123,7 +124,22 @@ const styles = {
     roundedFull: "rounded-full",
     
     // --- Opacity ---
-    opacityHover: "opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+    opacityHover: "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+
+      // Add these new styles:
+  hoverEffect: "transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl",
+  image: "transition-all duration-300 hover:scale-105",
+  tag: "inline-block px-3 py-1 rounded-full text-sm font-medium",
+  tagPrimary: "bg-indigo-100 text-indigo-800",
+  tagSecondary: "bg-gray-100 text-gray-800",
+  
+  // Modern gradient backgrounds
+  gradientBg: "bg-gradient-to-br from-gray-50 to-white",
+  gradientCard: "bg-gradient-to-br from-white to-gray-50",
+  
+  // Animation classes
+  fadeIn: "animate-fadeIn",
+  slideUp: "animate-slideUp",
 };
 
 export { styles };

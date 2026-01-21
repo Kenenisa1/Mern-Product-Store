@@ -1,10 +1,9 @@
-// src/routeConfig.js - Route configuration
 export const routes = [
   { path: '/', element: 'HomePage' },
   { path: '/about', element: 'About' },
   { path: '/contact', element: 'Contact' },
   { path: '/home', element: 'HomePage' },
-  { path: '/Product/:id', element: 'ProductDetail' },
+  { path: '/product/:id', element: 'ProductDetail' },
   { 
     path: '/create', 
     element: 'CreatePage',
@@ -24,4 +23,8 @@ export const routes = [
     element: 'Products',
     protected: true 
   },
+  {
+    path: '/privacy',
+    element: 'PrivacyPolicy'
+  }
 ];
