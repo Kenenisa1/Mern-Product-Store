@@ -65,7 +65,7 @@ const HeroSection = () => {
                 <div className="absolute -top-6 -left-6 bg-linear-to-r from-blue-500 to-cyan-400 text-white p-4 rounded-xl shadow-2xl">
                   <div className="text-center">
                     <div className="text-2xl font-bold">30% discount</div>
-                    <div className="text-sm">preview</div>
+                    <div className="text-sm">first preview</div>
                   </div>
                 </div>
                 
