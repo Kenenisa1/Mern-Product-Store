@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  // ADD THIS for production deployment
-  base: '/',
+  
+  base: '/', 
   
   server: {
     proxy: {
@@ -17,7 +17,7 @@ export default defineConfig({
   
   build: {
     outDir: 'dist',
-    // ADD these for better production builds
+    assetsDir: 'assets',
     sourcemap: false,
     rollupOptions: {
       output: {
